@@ -331,11 +331,11 @@ def test_null_fields():
     class Person(models.Base):
 
         name = fields.StringField(null_serialize=True)
+        tag = fields.StringField()
 
-    p = Person()
+    p = Person(tag=None)
     d = p.to_struct()
     assert d["name"] is None
 
     import json
-    assert json.dumps(p.to_struct()) == '{"tag": "Kartman", "name": null}'
-
+    assert json.dumps(p.to_struct()) == '{"name": null}'
