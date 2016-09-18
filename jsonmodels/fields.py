@@ -25,11 +25,15 @@ class BaseField(object):
         self.help_text = help_text
         self._assign_validators(validators)
         self.default = default
+        self._name = ''
 
     def _assign_validators(self, validators):
         if validators and not isinstance(validators, list):
             validators = [validators]
         self.validators = validators or []
+
+    def _set_name(self, name):
+        self._name = name
 
     def __set__(self, instance, value):
         self._finish_initialization(type(instance))
@@ -58,7 +62,7 @@ class BaseField(object):
         value = self.__get__(obj)
         self.validate(value)
 
-    def validate(self, value):
+    def validate(self, value,):
         self._check_types()
         self._validate_against_types(value)
         self._check_against_required(value)
@@ -66,13 +70,17 @@ class BaseField(object):
 
     def _check_against_required(self, value):
         if value is None and self.required:
-            raise ValidationError('Field is required!')
+            raise ValidationError('Field {} is required!'.format(self._name))
 
     def _validate_against_types(self, value):
         if value is not None and not isinstance(value, self.types):
             raise ValidationError(
-                'Value is wrong, expected type "{types}"'.format(
-                    types=', '.join([t.__name__ for t in self.types])
+                'field "{name}". '
+                'Value is wrong'
+                'expected type "{types}" got "{actual}"'.format(
+                    name=self._name,
+                    types=', '.join([t.__name__ for t in self.types]),
+                    actual=str(type(value).__name__)
                 ),
                 value,
             )
@@ -80,8 +88,10 @@ class BaseField(object):
     def _check_types(self):
         if self.types is None:
             raise ValidationError(
-                'Field "{type}" is not usable, try '
-                'different field type.'.format(type=type(self).__name__))
+                'Field {name} "{type}" is not usable, try '
+                'different field type.'.format(
+                    name=self._name,
+                    type=type(self).__name__))
 
     def to_struct(self, value):
         """Cast value to Python structure."""
