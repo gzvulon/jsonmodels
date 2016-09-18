@@ -11,6 +11,7 @@ def test_initialization():
         surname = fields.StringField()
         age = fields.IntField()
         cash = fields.FloatField()
+        tag = fields.StringField(default='Kartman')
 
     data = dict(
         name='Alan',
@@ -296,3 +297,15 @@ def test_deep_initialization_for_embed_field():
         car = parking.car
         assert isinstance(car, Car)
         assert car.brand == 'awesome brand'
+
+
+def test_default_fields():
+
+    class Person(models.Base):
+
+        name = fields.StringField()
+        tag = fields.StringField(default='Kartman')
+
+    p = Person()
+    assert p.tag == 'Kartman'
+    assert p.name is None

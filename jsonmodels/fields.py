@@ -18,11 +18,13 @@ class BaseField(object):
             self,
             required=False,
             help_text=None,
-            validators=None):
+            validators=None,
+            default=None):
         self.memory = WeakKeyDictionary()
         self.required = required
         self.help_text = help_text
         self._assign_validators(validators)
+        self.default = default
 
     def _assign_validators(self, validators):
         if validators and not isinstance(validators, list):
@@ -101,14 +103,13 @@ class BaseField(object):
             except AttributeError:
                 validator(value)
 
-    @staticmethod
-    def get_default_value():
+    def get_default_value(self):
         """Get default value for field.
 
         Each field can specify its default.
 
         """
-        return None
+        return self.default
 
 
 class StringField(BaseField):
