@@ -1,8 +1,8 @@
 import six
 
 from . import parsers, errors
-from .fields import BaseField
 from .errors import ValidationError
+from .fields import BaseField
 
 
 class Base(object):
@@ -10,7 +10,12 @@ class Base(object):
     """Base class for all models."""
 
     def __init__(self, **kwargs):
+        self._update_names()
         self.populate(**kwargs)
+
+    def _update_names(self):
+        for name, field in self:
+            field._set_name(name)
 
     def populate(self, **kw):
         """Populate values to fields. Skip non-existing."""

@@ -309,3 +309,18 @@ def test_default_fields():
     p = Person()
     assert p.tag == 'Kartman'
     assert p.name is None
+
+
+def test_validation_failed_with_field_name():
+
+    class Person(models.Base):
+
+        name = fields.StringField(required=True)
+        tag = fields.StringField(default='Kartman')
+
+    data = {'tag': 3}
+    try:
+        Person(**data)
+    except errors.ValidationError as ex:
+        assert 'field "tag".' in str(ex)
+        assert 'expected type "basestring" got "int"' in str(ex)
