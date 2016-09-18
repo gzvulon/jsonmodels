@@ -19,13 +19,15 @@ class BaseField(object):
             required=False,
             help_text=None,
             validators=None,
-            default=None):
+            default=None,
+            null_serialize=False):
         self.memory = WeakKeyDictionary()
         self.required = required
         self.help_text = help_text
         self._assign_validators(validators)
         self.default = default
         self._name = ''
+        self.null_serialize = null_serialize
 
     def _assign_validators(self, validators):
         if validators and not isinstance(validators, list):

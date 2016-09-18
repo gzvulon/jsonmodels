@@ -21,7 +21,8 @@ def to_struct(model):
     resp = {}
     for name, field in model:
         value = field.__get__(model)
-        if value is None:
+
+        if not field.null_serialize and value is None:
             continue
 
         if isinstance(value, list):

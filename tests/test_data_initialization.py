@@ -324,3 +324,18 @@ def test_validation_failed_with_field_name():
     except errors.ValidationError as ex:
         assert 'field "tag".' in str(ex)
         assert 'expected type "basestring" got "int"' in str(ex)
+
+
+def test_null_fields():
+
+    class Person(models.Base):
+
+        name = fields.StringField(null_serialize=True)
+
+    p = Person()
+    d = p.to_struct()
+    assert d["name"] is None
+
+    import json
+    assert json.dumps(p.to_struct()) == '{"tag": "Kartman", "name": null}'
+
