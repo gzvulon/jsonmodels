@@ -339,3 +339,27 @@ def test_null_fields():
 
     import json
     assert json.dumps(p.to_struct()) == '{"name": null}'
+
+
+def test_int_default():
+
+    class Counter(models.Base):
+        count = fields.IntField(default=0)
+
+    p = Counter()
+    p.count += 1
+    assert p.count == 1
+
+
+def test_int_constructor():
+
+    class Counter(models.Base):
+        count = fields.IntField()
+
+        def __init__(self, **kwargs):
+            self.count = 0
+            super(Counter, self).__init__(**kwargs)
+
+    p = Counter()
+    p.count += 1
+    assert p.count == 1
