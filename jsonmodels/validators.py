@@ -1,10 +1,7 @@
 """Predefined validators."""
 import re
-
-from six.moves import reduce
-
-from .errors import ValidationError
 from . import utilities
+from .errors import ValidationError
 
 
 class Min(object):

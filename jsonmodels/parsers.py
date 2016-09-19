@@ -1,6 +1,5 @@
 """Parsers to change model structure into different ones."""
 import inspect
-
 from . import fields, builders, errors
 
 

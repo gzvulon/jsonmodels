@@ -64,7 +64,7 @@ class BaseField(object):
         value = self.__get__(obj)
         self.validate(value)
 
-    def validate(self, value,):
+    def validate(self, value):
         self._check_types()
         self._validate_against_types(value)
         self._check_against_required(value)
