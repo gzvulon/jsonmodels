@@ -7,6 +7,8 @@ from .fields import BaseField
 
 class Base(object):
 
+    _strict_ = False
+
     """Base class for all models."""
 
     def __init__(self, **kwargs):
@@ -19,9 +21,16 @@ class Base(object):
 
     def populate(self, **kw):
         """Populate values to fields. Skip non-existing."""
-        for name, field in self:
-            if name in kw:
-                field.__set__(self, kw[name])
+        name_to_field = {
+            name: field for name, field in self.iterate_over_fields()}
+        diff = [name for name in kw if name not in name_to_field]
+        if diff and self._strict_:
+            raise ValidationError('non expected arguments {}'.format(diff))
+
+        for name, value in kw.iteritems():
+            if name in diff:
+                continue
+            name_to_field[name].__set__(self, value)
 
     def get_field(self, field_name):
         """Get field associated with given attribute."""

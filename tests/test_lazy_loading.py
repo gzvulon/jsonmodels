@@ -10,7 +10,6 @@ class Primary(models.Base):
 
 
 class Third(models.Base):
-
     name = fields.StringField()
     secondary = fields.EmbeddedField('tests.test_lazy_loading.Secondary')
 

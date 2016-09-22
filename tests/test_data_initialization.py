@@ -332,6 +332,7 @@ def test_null_fields():
 
         name = fields.StringField(null_serialize=True)
         tag = fields.StringField()
+        x = fields.IntField()
 
     p = Person(tag=None)
     d = p.to_struct()
@@ -339,6 +340,8 @@ def test_null_fields():
 
     import json
     assert json.dumps(p.to_struct()) == '{"name": null}'
+    setattr(p, 'name', 'dfd')
+    assert p.name == 'dfd'
 
 
 def test_int_default():
@@ -363,3 +366,26 @@ def test_int_constructor():
     p = Counter()
     p.count += 1
     assert p.count == 1
+
+
+def test_strict_constructor():
+
+    class PersonStrict(models.Base):
+        _strict_ = True
+
+        name = fields.StringField(null_serialize=True)
+        tag = fields.StringField()
+        x = fields.IntField()
+
+    PersonStrict(name='dsf', x=234)
+    with pytest.raises(errors.ValidationError):
+        PersonStrict(name='dsf', boo=7799)
+
+    class PersonNonStrict(models.Base):
+        _strict_ = False
+
+        name = fields.StringField(null_serialize=True)
+        tag = fields.StringField()
+        x = fields.IntField()
+    PersonNonStrict(name='dsf', x=234)
+    PersonNonStrict(name='dsf', boo=7799)
